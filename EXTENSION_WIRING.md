@@ -6,9 +6,9 @@ to the repo root.
 ## 1. "Upgrade to Pro" opens the payments page — implemented
 
 `user-store.js` → `upgrade()` builds the pricing URL with the account
-attached (`captifyConfig.pricingUrl(email, userId)` → `?from=extension`
+attached (`sonarisConfig.pricingUrl(email, userId)` → `?from=extension`
 `&email=…&user_id=…`) and sends it to the service worker as
-`{ type: "captify-menu-action", action: "upgrade", url }`, which opens the
+`{ type: "sonaris-menu-action", action: "upgrade", url }`, which opens the
 tab after allow-listing it against its own `SITE_URL` constant. The relay
 exists because content scripts have no `chrome.tabs` — the URL is built
 where the account lives (and is covered by

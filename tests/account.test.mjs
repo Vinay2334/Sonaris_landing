@@ -23,7 +23,7 @@ function loadAuth({ fetchImpl = null, stored = {}, site = SITE } = {}) {
   const mem = { ...stored };
   const calls = [];
   const window = {
-    CaptifySite: { ...site },
+    SonarisSite: { ...site },
     location: { origin: "http://localhost:8080", href: "http://localhost:8080/account.html" },
     localStorage: {
       getItem: (k) => (k in mem ? mem[k] : null),
@@ -44,12 +44,12 @@ function loadAuth({ fetchImpl = null, stored = {}, site = SITE } = {}) {
     readFileSync(new URL("../auth.js", import.meta.url), "utf8"),
     context,
   );
-  return { auth: window.CaptifySiteAuth, mem, calls };
+  return { auth: window.SonarisSiteAuth, mem, calls };
 }
 
 function liveSession() {
   return {
-    captifySiteSession: JSON.stringify({
+    sonarisSiteSession: JSON.stringify({
       access_token: "live",
       refresh_token: "r",
       expires_at: Date.now() + 3600 * 1000,

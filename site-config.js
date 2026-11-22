@@ -1,4 +1,4 @@
-// Captify website — single source of truth for external service wiring.
+// Sonaris website — single source of truth for external service wiring.
 //
 // HOW TO GO LIVE (you do these steps, nothing is downloaded by the agent):
 //   1. Dodo Payments dashboard → create 3 monthly Products (Free needs no
@@ -13,7 +13,7 @@
 //   4. Serve this folder statically (any static host) and set SITE_URL.
 //   5. Point the extension at it — see EXTENSION_WIRING.md.
 
-window.CaptifySite = {
+window.SonarisSite = {
   // Public origin of this site, no trailing slash. Used to build absolute
   // links the extension and Supabase redirect to. Serve this folder on the
   // same port (e.g. `python -m http.server 8080`) so the Dodo `redirect_url`

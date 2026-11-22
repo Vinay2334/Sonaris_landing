@@ -1,4 +1,4 @@
-// Shared Supabase Auth + checkout helpers for the Captify website.
+// Shared Supabase Auth + checkout helpers for the Sonaris website.
 //
 // No SDK, no build step: plain fetch against the Supabase Auth REST API,
 // the same pattern as verify.js and the extension's supabase-auth.js.
@@ -7,15 +7,15 @@
 // URL hints (?email=, ?user_id=) are only prefill/fallback, never the
 // authority for checkout attribution.
 (function () {
-  var A = (window.CaptifySiteAuth = window.CaptifySiteAuth || {});
+  var A = (window.SonarisSiteAuth = window.SonarisSiteAuth || {});
   if (A.__loaded) return;
   A.__loaded = true;
 
-  var STORAGE_KEY = "captifySiteSession";
+  var STORAGE_KEY = "sonarisSiteSession";
   var REFRESH_SKEW_MS = 60 * 1000;
 
   function cfg() {
-    return window.CaptifySite || {};
+    return window.SonarisSite || {};
   }
 
   function projectUrl() {

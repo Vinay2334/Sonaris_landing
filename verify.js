@@ -11,7 +11,7 @@
 // No Supabase JS SDK is used — plain fetch against the Auth REST API, so
 // this page needs no build step and no npm install.
 (function () {
-  var cfg = window.CaptifySite || {};
+  var cfg = window.SonarisSite || {};
 
   function show(id) {
     ["verify-loading", "verify-ok", "verify-error"].forEach(function (el) {

@@ -6,7 +6,7 @@
 // profile renders from the session alone, while plan + quota degrade
 // gracefully when the backend is unreachable.
 (function () {
-  var A = window.CaptifySiteAuth || {};
+  var A = window.SonarisSiteAuth || {};
 
   function $(id) {
     return document.getElementById(id);

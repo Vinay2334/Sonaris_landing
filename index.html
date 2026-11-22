@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#FFFBEB" />
-  <title>Captify — Live captions for anything you watch</title>
-  <meta name="description" content="Captify adds real-time captions and translation to any tab: streams, video calls, classes, movies." />
+  <title>Sonaris — Live captions for anything you watch</title>
+  <meta name="description" content="Sonaris adds real-time captions and translation to any tab: streams, video calls, classes, movies." />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -88,7 +88,7 @@
   <header class="border-b border-honeyline bg-paper/90">
     <div class="max-w-6xl mx-auto px-5 py-4 flex items-center gap-3">
       <a href="index.html" class="text-lg font-bold no-underline text-cocoa">
-        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-honey text-cocoa font-extrabold mr-2">C</span>Captify
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-honey text-cocoa font-extrabold mr-2">S</span>Sonaris
       </a>
       <nav class="ml-auto flex items-center gap-5 text-[15px]">
         <a href="#where" class="text-stone-600 hover:text-cocoa no-underline">Where it works</a>
@@ -106,7 +106,7 @@
       <div>
         <h1 class="text-4xl leading-tight font-bold m-0 text-cocoa">Live captions for anything you&nbsp;watch</h1>
         <p class="text-stone-600 text-lg mt-4 mb-2">
-          Captify subtitles any tab in real time — streams, video calls,
+          Sonaris subtitles any tab in real time — streams, video calls,
           lectures, movies — and translates between 11 languages as it goes.
         </p>
         <p class="text-stone-500 text-[15px] mt-0">No uploads. No new apps. Just press play.</p>
@@ -134,7 +134,7 @@
             </span>
           </div>
           <p id="player-caption" class="caption-fade absolute bottom-8 inset-x-0 text-center px-6 text-lg font-semibold text-white" style="text-shadow: 0 2px 6px rgba(0,0,0,0.9);">“La reunión empieza en cinco minutos.”</p>
-          <p class="absolute bottom-2 inset-x-0 text-center text-xs text-white/70">Captify is listening to this tab</p>
+          <p class="absolute bottom-2 inset-x-0 text-center text-xs text-white/70">Sonaris is listening to this tab</p>
         </div>
         <div class="px-4 py-3 flex items-center gap-3 bg-paper">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#78716c" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
@@ -147,7 +147,7 @@
     </section>
 
     <!-- Filmstrip marquee: everywhere captions follow -->
-    <section class="filmstrip py-9 overflow-hidden" aria-label="Examples of places Captify captions">
+    <section class="filmstrip py-9 overflow-hidden" aria-label="Examples of places Sonaris captions">
       <div class="marquee-track px-5" id="film-track">
         <!-- set 1 -->
         <div class="w-64 shrink-0 rounded-xl bg-paper border border-honeyline shadow-card p-3">
@@ -184,7 +184,7 @@
     <!-- Where it works: three distinct mock screens -->
     <section id="where" class="max-w-6xl mx-auto px-5 py-14">
       <h2 class="text-2xl font-bold m-0 text-cocoa">One extension, every screen</h2>
-      <p class="text-stone-500 mt-2 mb-8">If it plays audio in a tab, Captify can caption it.</p>
+      <p class="text-stone-500 mt-2 mb-8">If it plays audio in a tab, Sonaris can caption it.</p>
 
       <div class="grid gap-5 md:grid-cols-3">
         <!-- Video call -->
@@ -229,7 +229,7 @@
           <li class="border-t-2 border-honeydeep pt-4">
             <p class="text-3xl font-bold text-honeydeep/40 m-0">1</p>
             <p class="font-semibold mt-2 mb-1 text-cocoa">Install the extension</p>
-            <p class="text-stone-600 text-[15px] m-0">Add Captify to Chrome. It lives in your toolbar, ready on every tab.</p>
+            <p class="text-stone-600 text-[15px] m-0">Add Sonaris to Chrome. It lives in your toolbar, ready on every tab.</p>
           </li>
           <li class="border-t-2 border-honeydeep pt-4">
             <p class="text-3xl font-bold text-honeydeep/40 m-0">2</p>
@@ -263,7 +263,7 @@
 
   <footer class="border-t border-honeyline">
     <div class="max-w-6xl mx-auto px-5 py-6 text-sm text-stone-500 flex flex-wrap gap-x-6 gap-y-2">
-      <span>Captify · Live captions anywhere you watch</span>
+      <span>Sonaris · Live captions anywhere you watch</span>
       <span class="ml-auto flex flex-wrap gap-x-6 gap-y-2">
         <a href="pricing.html" class="text-stone-500 no-underline hover:text-cocoa">Pricing</a>
         <a href="account.html" class="text-stone-500 no-underline hover:text-cocoa">My account</a>
@@ -279,7 +279,7 @@
     // The hardcoded lines above stay as the instant fallback when the
     // backend is unreachable.
     (function () {
-      var A = window.CaptifySiteAuth || {};
+      var A = window.SonarisSiteAuth || {};
       if (!A.fetchPlans) return;
       A.fetchPlans().then(function (plans) {
         if (!plans || !plans.length) return;

@@ -10,8 +10,8 @@
 // Extension hints (?from=extension&email=&user_id=) only prefill: the site
 // session's user is authoritative once signed in.
 (function () {
-  var cfg = window.CaptifySite || {};
-  var A = window.CaptifySiteAuth || {};
+  var cfg = window.SonarisSite || {};
+  var A = window.SonarisSiteAuth || {};
 
   function params() {
     return A.parseParams ? A.parseParams(window.location.search) : {};

@@ -1,4 +1,4 @@
-# Captify website — pricing + email verification
+# Sonaris website — pricing + email verification
 
 Separate static site the extension redirects to. No build step, no npm
 packages, no bundler: open the files directly or serve this folder with any

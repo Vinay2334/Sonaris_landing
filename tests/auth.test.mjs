@@ -23,7 +23,7 @@ function loadAuth({ fetchImpl = null, stored = {}, origin = "http://localhost:80
   const mem = { ...stored };
   const calls = [];
   const window = {
-    CaptifySite: { ...SITE },
+    SonarisSite: { ...SITE },
     location: { origin, href: origin + "/pricing.html" },
     localStorage: {
       getItem: (k) => (k in mem ? mem[k] : null),
@@ -44,7 +44,7 @@ function loadAuth({ fetchImpl = null, stored = {}, origin = "http://localhost:80
     readFileSync(new URL("../auth.js", import.meta.url), "utf8"),
     context,
   );
-  return { auth: window.CaptifySiteAuth, mem, calls };
+  return { auth: window.SonarisSiteAuth, mem, calls };
 }
 
 test("parseParams reads query and hash strings", () => {
@@ -128,7 +128,7 @@ test("googleAuthorizeUrl points at Supabase with the return page", () => {
 
 test("usable session returns its token without network", async () => {
   const stored = {
-    captifySiteSession: JSON.stringify({
+    sonarisSiteSession: JSON.stringify({
       access_token: "live",
       refresh_token: "r",
       expires_at: Date.now() + 3600 * 1000,
@@ -188,7 +188,7 @@ test("buildCheckoutUrl accepts catalog rows (snake_case product id)", () => {
 
 test("stale session refreshes; rejected refresh clears the token", async () => {
   const good = {
-    captifySiteSession: JSON.stringify({
+    sonarisSiteSession: JSON.stringify({
       access_token: "old",
       refresh_token: "r",
       expires_at: Date.now() - 1000,
@@ -207,10 +207,10 @@ test("stale session refreshes; rejected refresh clears the token", async () => {
   };
   const first = loadAuth({ stored: good, fetchImpl: okFetch });
   assert.equal(await first.auth.getAccessToken(), "new");
-  assert.equal(JSON.parse(first.mem.captifySiteSession).access_token, "new");
+  assert.equal(JSON.parse(first.mem.sonarisSiteSession).access_token, "new");
 
   const bad = {
-    captifySiteSession: JSON.stringify({
+    sonarisSiteSession: JSON.stringify({
       access_token: "old",
       refresh_token: "r",
       expires_at: Date.now() - 1000,
@@ -220,5 +220,5 @@ test("stale session refreshes; rejected refresh clears the token", async () => {
   const badFetch = async () => ({ ok: false, status: 401, json: async () => ({}) });
   const second = loadAuth({ stored: bad, fetchImpl: badFetch });
   assert.equal(await second.auth.getAccessToken(), null);
-  assert.equal(second.mem.captifySiteSession, undefined);
+  assert.equal(second.mem.sonarisSiteSession, undefined);
 });

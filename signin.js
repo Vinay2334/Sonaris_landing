@@ -1,4 +1,4 @@
-// Captify website sign-in page.
+// Sonaris website sign-in page.
 //
 // Gate before checkout: with a signed-in session the pricing page stamps
 // the account's user id into Dodo metadata, so the webhook attributes the
@@ -11,9 +11,9 @@
 // tokens; `next`/pending plan survive in sessionStorage. After login the
 // page continues to a pending plan's Dodo checkout, else to `next`.
 (function () {
-  var cfg = window.CaptifySite || {};
-  var A = window.CaptifySiteAuth || {};
-  var RETURN_KEY = "captifySigninReturn";
+  var cfg = window.SonarisSite || {};
+  var A = window.SonarisSiteAuth || {};
+  var RETURN_KEY = "sonarisSigninReturn";
 
   function $(id) {
     return document.getElementById(id);
