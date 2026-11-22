@@ -172,7 +172,7 @@
     var list = el("ul");
     var minutes = el("li");
     minutes.appendChild(el("strong", null, (plan.minutes || 0).toLocaleString("en-US") + " subtitle minutes"));
-    minutes.appendChild(document.createTextNode(" / month"));
+    minutes.appendChild(document.createTextNode(" / day"));
     list.appendChild(minutes);
     (plan.features || []).forEach(function (f) {
       list.appendChild(el("li", f.dim ? "dim" : null, f.text));

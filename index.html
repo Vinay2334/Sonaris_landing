@@ -114,7 +114,7 @@
           <a href="pricing.html" class="bg-honey text-cocoa font-semibold rounded-full px-6 py-3 no-underline shadow-cta hover:bg-amber-500">See plans</a>
           <a href="#how" class="bg-paper text-cocoa border border-stone-300 rounded-full px-6 py-3 no-underline hover:border-honeydeep hover:bg-cream">How it works</a>
         </div>
-        <p class="text-stone-500 text-sm mt-4">Free Starter plan · 100 minutes a month · Cancel anytime</p>
+        <p class="text-stone-500 text-sm mt-4">Free plan · 40 minutes a day · Cancel anytime</p>
       </div>
 
       <!-- Mock player: the screen itself stays dark, like a real video -->
@@ -251,9 +251,10 @@
         <h2 class="text-2xl font-bold m-0 text-cocoa">Start free, upgrade for more minutes</h2>
         <p class="text-stone-500 mt-3 mb-8">Monthly billing · Cancel anytime · Secure checkout by Dodo Payments</p>
         <div id="plan-teaser" class="flex flex-wrap justify-center gap-x-10 gap-y-3 text-left mb-8">
-          <p class="m-0 text-cocoa"><span class="font-bold">Starter · $0</span> <span class="text-stone-500">— 100 min/mo</span></p>
-          <p class="m-0 text-cocoa"><span class="font-bold">Pro · $12</span> <span class="text-stone-500">— 1,000 min/mo</span></p>
-          <p class="m-0 text-cocoa"><span class="font-bold">Studio · $29</span> <span class="text-stone-500">— 4,000 min/mo</span></p>
+          <p class="m-0 text-cocoa"><span class="font-bold">Free · $0</span> <span class="text-stone-500">— 40 min/day</span></p>
+          <p class="m-0 text-cocoa"><span class="font-bold">Starter · $10</span> <span class="text-stone-500">— 180 min/day</span></p>
+          <p class="m-0 text-cocoa"><span class="font-bold">Pro · $27</span> <span class="text-stone-500">— 540 min/day</span></p>
+          <p class="m-0 text-cocoa"><span class="font-bold">Studio · $50</span> <span class="text-stone-500">— 720 min/day</span></p>
         </div>
         <a href="pricing.html" class="inline-block bg-honey text-cocoa font-semibold rounded-full px-8 py-3 no-underline shadow-cta hover:bg-amber-500">Compare all plans</a>
       </div>
@@ -293,7 +294,7 @@
           head.textContent = p.name + " · $" + p.price_monthly_usd;
           var tail = document.createElement("span");
           tail.className = "text-stone-500";
-          tail.textContent = " — " + Number(p.minutes || 0).toLocaleString("en-US") + " min/mo";
+          tail.textContent = " — " + Number(p.minutes || 0).toLocaleString("en-US") + " min/day";
           line.appendChild(head);
           line.appendChild(document.createTextNode(" "));
           line.appendChild(tail);

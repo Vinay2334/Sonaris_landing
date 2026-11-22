@@ -75,15 +75,15 @@
         (match.price_label || "$" + match.price_monthly_usd + " / month") +
         " · " +
         Number(match.minutes || 0).toLocaleString("en-US") +
-        " min/mo";
+        " min/day";
     } else {
       // Backend or catalog unreachable: the snapshot alone still names
       // the plan and its minute allowance.
-      $("plan-name").textContent = quota.plan || "Starter";
+      $("plan-name").textContent = quota.plan || "Free";
       $("plan-tagline").textContent = "Plan details unavailable — showing your live allowance.";
       $("plan-price").textContent =
         Number(wholeMinutes(quota.limitSeconds)).toLocaleString("en-US") +
-        " min/mo";
+        " min/day";
     }
   }
 
@@ -106,7 +106,7 @@
       remaining.textContent = "You've used all " + limit.toLocaleString("en-US") + " minutes — upgrade for more.";
       remaining.classList.add("quota-low");
     } else {
-      remaining.textContent = left.toLocaleString("en-US") + " min left this month (" + pct + "% used).";
+      remaining.textContent = left.toLocaleString("en-US") + " min left today (" + pct + "% used).";
       remaining.classList.toggle("quota-low", pct >= 85);
     }
   }

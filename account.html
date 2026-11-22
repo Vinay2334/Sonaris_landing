@@ -23,7 +23,7 @@
   <main class="wrap account">
     <section class="hero hero-narrow">
       <h1>My account</h1>
-      <p>Your profile, current plan, and subtitle minutes for this month.</p>
+      <p>Your profile, current plan, and subtitle minutes for today.</p>
     </section>
 
     <div id="account-loading" class="plans-loading" aria-live="polite">
@@ -78,16 +78,16 @@
       </section>
 
       <!-- Quota: billed in whole subtitle seconds (see backend quota.py);
-           shown here in minutes. Resets on the 1st of each month. -->
+           shown here in minutes. Resets every 24 hours (UTC day). -->
       <section class="card" aria-label="Minutes usage">
-        <p class="card-kicker">Minutes this month</p>
+        <p class="card-kicker">Minutes today</p>
         <div id="quota-body">
           <p class="quota-numbers"><strong id="quota-used">–</strong> of <span id="quota-limit">–</span> min used</p>
           <div class="quota-bar" role="progressbar" aria-label="Subtitle minutes used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="quota-bar">
             <span id="quota-fill"></span>
           </div>
           <p id="quota-remaining" class="muted">–</p>
-          <p class="muted small">Minutes reset on the 1st of each month. Silent stretches and failed sessions bill 0.</p>
+          <p class="muted small">Minutes reset every 24 hours. Silent stretches and failed sessions bill 0. High-Accuracy (pro engine) minutes bill 3x.</p>
         </div>
         <div id="quota-error" hidden>
           <p class="form-error">Usage couldn't load. Check your connection and try again.</p>
