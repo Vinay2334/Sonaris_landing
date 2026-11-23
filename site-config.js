@@ -22,7 +22,7 @@ window.SonarisSite = {
   // links the extension and Supabase redirect to. Serve this folder on the
   // same port (e.g. `python -m http.server 8080`) so the Dodo `redirect_url`
   // lands back here after test checkout.
-  SITE_URL: "https://captifylanding.netlify.app/",
+  SITE_URL: "https://sonaris.cc/",
 
   // Supabase project (public anon key only — same values as
   // extensionRTC/src/caption-overlay/lib/supabase-config.js).
@@ -43,7 +43,7 @@ window.SonarisSite = {
   // FastAPI backend origin (must match where `uvicorn app.main:app`
   // listens). The pricing page fetches the plan catalog and the signed-in
   // user's quota from here; the extension has its own copy of this URL.
-  BACKEND_BASE_URL: "https://130.210.75.41.sslip.io",
+  BACKEND_BASE_URL: "https://api.sonaris.cc",
 
   // Chrome Web Store listing for the extension (navbar + account page
   // "Install extension" buttons). Points at the store homepage until the
