@@ -237,6 +237,74 @@
     });
   }
 
+  // Ask Supabase to email a password-reset link. Resolves true when the
+  // request was accepted (Supabase answers 200 even for unknown emails,
+  // so callers must not reveal whether the address exists). `redirectTo`
+  // is the absolute reset-password.html URL the email link should land
+  // on — it must be allow-listed in Supabase (URL Configuration →
+  // Redirect URLs). Throws on network/validation failure.
+  function requestPasswordReset(email, redirectTo) {
+    var clean = String(email || "").trim();
+    if (!clean) return Promise.reject(new Error("Enter your email first."));
+    var url = projectUrl() + "/auth/v1/recover";
+    if (redirectTo) url += "?redirect_to=" + encodeURIComponent(redirectTo);
+    return fetch(url, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ email: clean }),
+    }).then(function (res) {
+      if (!res.ok) {
+        return failMessage(res).then(function (msg) {
+          throw new Error(msg);
+        });
+      }
+      return true;
+    });
+  }
+
+  // Exchange a recovery token from the email link for a session whose
+  // token can set a new password. Accepts the `token_hash` Supabase
+  // appends to the reset link (POST /auth/v1/verify). Resolves the
+  // session or null when the link is invalid/expired/unreachable.
+  // Pure I/O wrapper — the page decides whether to keep the session.
+  function exchangeRecoveryToken(tokenHash) {
+    if (!tokenHash) return Promise.resolve(null);
+    return fetch(projectUrl() + "/auth/v1/verify", {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ type: "recovery", token_hash: tokenHash }),
+    }).then(function (res) {
+      if (!res.ok) return null;
+      return res.json().then(function (data) {
+        return toSession(data);
+      });
+    }).catch(function () {
+      return null;
+    });
+  }
+
+  // Set a new password with a recovery session token
+  // (PUT /auth/v1/user). Resolves the updated user, throws otherwise
+  // (weak password, expired token, network failure).
+  function updatePassword(accessToken, newPassword) {
+    if (!accessToken) return Promise.reject(new Error("This reset link is missing its token. Request a new one."));
+    if (!newPassword || String(newPassword).length < 6) {
+      return Promise.reject(new Error("Use a password with at least 6 characters."));
+    }
+    return fetch(projectUrl() + "/auth/v1/user", {
+      method: "PUT",
+      headers: authHeaders({ Authorization: "Bearer " + accessToken }),
+      body: JSON.stringify({ password: newPassword }),
+    }).then(function (res) {
+      if (!res.ok) {
+        return failMessage(res).then(function (msg) {
+          throw new Error(msg);
+        });
+      }
+      return res.json();
+    });
+  }
+
   function signOut() {
     var session = readStored();
     var token = session && session.access_token;
@@ -493,5 +561,8 @@
   A.ensureUser = ensureUser;
   A.signInWithPassword = signInWithPassword;
   A.signUp = signUp;
+  A.requestPasswordReset = requestPasswordReset;
+  A.exchangeRecoveryToken = exchangeRecoveryToken;
+  A.updatePassword = updatePassword;
   A.signOut = signOut;
 })();

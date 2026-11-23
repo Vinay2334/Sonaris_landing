@@ -20,7 +20,7 @@
   }
 
   function show(id) {
-    ["signin-loading", "signin-form-wrap", "signin-done"].forEach(function (el) {
+    ["signin-loading", "signin-form-wrap", "signin-reset-sent", "signin-done"].forEach(function (el) {
       $(el).hidden = el !== id;
     });
   }
@@ -165,15 +165,34 @@
 
   var mode = "signin";
 
+  // Absolute reset-password.html URL for the inbox link. Must be
+  // allow-listed in Supabase (Authentication → URL Configuration →
+  // Redirect URLs) or Supabase ignores it and uses the Site URL.
+  function resetRedirectUrl() {
+    try {
+      return (
+        window.location.origin +
+        window.location.pathname.replace(/[^/]*$/, "") +
+        "reset-password.html"
+      );
+    } catch (e) {
+      return "";
+    }
+  }
+
   function showForm() {
     var form = $("signin-form");
     var emailInput = $("signin-email");
     var passwordInput = $("signin-password");
+    var passwordRow = $("signin-password-row");
     var firstNameInput = $("signin-firstname");
     var lastNameInput = $("signin-lastname");
     var nameRow = $("signin-name-row");
     var submitBtn = $("signin-submit");
     var googleBtn = $("signin-google");
+    var switchRow = $("signin-switch-row");
+    var forgotRow = $("signin-forgot-row");
+    var backRow = $("signin-back-row");
     var busy = false;
 
     show("signin-form-wrap");
@@ -183,11 +202,20 @@
     function setMode(next) {
       mode = next;
       var signup = mode === "signup";
+      var reset = mode === "reset";
       nameRow.hidden = !signup;
       firstNameInput.disabled = !signup;
       lastNameInput.disabled = !signup;
+      // Reset mode reuses the email field only: the password input is
+      // disabled (skipped by reportValidity) and Google/toggle rows hide.
+      passwordRow.hidden = reset;
+      passwordInput.disabled = reset;
+      googleBtn.hidden = reset;
+      switchRow.hidden = reset;
+      forgotRow.hidden = reset || signup;
+      backRow.hidden = !reset;
       passwordInput.autocomplete = signup ? "new-password" : "current-password";
-      submitBtn.textContent = signup ? "Create account" : "Sign in";
+      submitBtn.textContent = reset ? "Send reset link" : signup ? "Create account" : "Sign in";
       $("signin-toggle-message").textContent = signup
         ? "Already have an account?"
         : "Don't have an account?";
@@ -199,6 +227,18 @@
       e.preventDefault();
       setMode(mode === "signin" ? "signup" : "signin");
     });
+    $("signin-forgot").addEventListener("click", function (e) {
+      e.preventDefault();
+      setMode("reset");
+    });
+    $("signin-back").addEventListener("click", function (e) {
+      e.preventDefault();
+      setMode("signin");
+    });
+    $("signin-reset-back").addEventListener("click", function () {
+      setMode("signin");
+      show("signin-form-wrap");
+    });
     setMode("signin");
 
     form.addEventListener("submit", function (e) {
@@ -206,6 +246,34 @@
       if (busy) return;
       if (!form.reportValidity()) return;
       var email = emailInput.value.trim();
+
+      if (mode === "reset") {
+        if (!email) {
+          showError("Enter your email first.");
+          return;
+        }
+        busy = true;
+        submitBtn.disabled = true;
+        googleBtn.disabled = true;
+        $("signin-error").hidden = true;
+        var req = A.requestPasswordReset
+          ? A.requestPasswordReset(email, resetRedirectUrl())
+          : Promise.reject(new Error("Password reset isn't available right now."));
+        req.then(function () {
+          $("signin-reset-text").textContent =
+            "If an account exists for " + email +
+            ", a reset link is on its way — check your inbox (and spam folder).";
+          show("signin-reset-sent");
+        }).catch(function (err) {
+          showError((err && err.message) || "Couldn't send the reset link. Try again.");
+        }).then(function () {
+          busy = false;
+          submitBtn.disabled = false;
+          googleBtn.disabled = false;
+        });
+        return;
+      }
+
       var password = passwordInput.value;
       if (!email || !password) {
         showError("Enter your email and password.");

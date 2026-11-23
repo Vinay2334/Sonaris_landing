@@ -10,6 +10,10 @@
 //   3. Supabase dashboard → Authentication → URL Configuration → Site URL
 //      = <SITE_URL>/verify.html, and add it under Redirect URLs.
 //      Email template "{{ .ConfirmationURL }}" will then land here.
+//      Also add <SITE_URL>/reset-password.html and <SITE_URL>/signin.html
+//      under Redirect URLs: the site passes them as `redirect_to` for
+//      password-reset emails (auth.js requestPasswordReset) and for the
+//      Google sign-in return.
 //   4. Serve this folder statically (any static host) and set SITE_URL.
 //   5. Point the extension at it — see EXTENSION_WIRING.md.
 

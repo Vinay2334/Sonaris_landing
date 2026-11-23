@@ -10,9 +10,10 @@ static host.
 |---|---|
 | `index.html` | Landing page: cinema-themed pitch (mock player, filmstrip, where/how, plan teaser re-rendered from the catalog when the backend answers) |
 | `pricing.html` (+ `pricing.js`) | Payments page: plan cards rendered from `GET /api/v1/plans` (DB-driven — no redeploy to change them). Checkout is gated behind a site sign-in; buttons go to Dodo hosted links with `metadata_user_id`, or to `signin.html` first when signed out. The signed-in account's current plan is highlighted (from the quota endpoint); cheaper plans show as unavailable |
-| `signin.html` (+ `signin.js`) | Site sign-in / sign-up (email + Google) via Supabase Auth directly. Returns to `?next=` afterwards, or straight to a pending plan's Dodo checkout |
-| `account.html` (+ `account.js`) | My account: profile (name, email, member since, verification), current plan (live catalog matched by name), and minutes quota with usage bar from `GET /api/v1/me/quota`. Signed-out visitors get a sign-in gate (`?next=account.html`) |
+| `signin.html` (+ `signin.js`) | Site sign-in / sign-up (email + Google) via Supabase Auth directly, plus "Forgot password?" (recovery email → `reset-password.html`). Returns to `?next=` afterwards, or straight to a pending plan's Dodo checkout |
+| `account.html` (+ `account.js`) | My account: profile (name, email, member since, verification), current plan (live catalog matched by name), minutes quota with usage bar from `GET /api/v1/me/quota`, and a "Reset password" button (recovery email → `reset-password.html`). Signed-out visitors get a sign-in gate (`?next=account.html`) |
 | `verify.html` (+ `verify.js`) | Internal only — reached from Supabase confirmation emails, linked from nowhere on the site (set as Site URL in Supabase) |
+| `reset-password.html` (+ `reset-password.js`) | Internal only — reached from Supabase recovery emails (`redirect_to`, must be in Redirect URLs). Exchanges the link for a recovery session, sets the new password via `PUT /auth/v1/user`, keeps the session |
 | `success.html` | Dodo checkout return page (passed as `redirect_url` on every payment link) |
 
 Shared: `styles.css`, `site-config.js` (service wiring: Supabase project, Dodo base, backend origin, Chrome Web Store URL), `auth.js` (Supabase session, checkout + API URL helpers, plan-state helper for `pricing.js` / `signin.js`, account helpers + store-link painter).
@@ -53,7 +54,9 @@ them in `pricing.html` AND in the Supabase `plans` rows (migration
    `…/verify.html` (+ add to Redirect URLs). Keep **Confirm email** on;
    signup links will land on `verify.html`. For Google sign-in on the
    site, also add `…/signin.html` to Redirect URLs (Supabase returns the
-   OAuth tokens there).
+   OAuth tokens there). Password-reset emails link to
+   `…/reset-password.html` (passed as `redirect_to` by `requestPasswordReset`),
+   so add that too.
 3. **Serve** this folder (any static host) and set `SITE_URL` in
    `site-config.js`. The backend must allow the site origin
    (`WEBSITE_ORIGINS` in the backend `.env`, includes localhost:8080 by

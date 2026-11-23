@@ -168,7 +168,53 @@
     paintProfile(found.user);
     show("account-views");
     loadUsage();
+    wirePasswordReset(found.user);
   });
+
+  // "Reset password" emails a Supabase recovery link (redirects to
+  // reset-password.html — allow-listed in Supabase Redirect URLs).
+  function resetRedirectUrl() {
+    try {
+      return (
+        window.location.origin +
+        window.location.pathname.replace(/[^/]*$/, "") +
+        "reset-password.html"
+      );
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function wirePasswordReset(user) {
+    var btn = $("account-reset");
+    var msg = $("account-reset-msg");
+    if (!btn || btn.dataset.wired) return;
+    btn.dataset.wired = "1";
+    btn.addEventListener("click", function () {
+      var email = (user && user.email) || "";
+      if (!email) {
+        msg.textContent = "No email on this account — sign out and back in, then try again.";
+        msg.classList.add("form-error");
+        msg.hidden = false;
+        return;
+      }
+      btn.disabled = true;
+      msg.classList.remove("form-error");
+      msg.textContent = "Sending reset link…";
+      msg.hidden = false;
+      var req = A.requestPasswordReset
+        ? A.requestPasswordReset(email, resetRedirectUrl())
+        : Promise.reject(new Error("Password reset isn't available right now."));
+      req.then(function () {
+        msg.textContent = "Reset link sent to " + email + " — check your inbox (and spam folder).";
+      }).catch(function (err) {
+        msg.textContent = (err && err.message) || "Couldn't send the reset link. Try again.";
+        msg.classList.add("form-error");
+      }).then(function () {
+        btn.disabled = false;
+      });
+    });
+  }
 
   var retry = $("quota-retry");
   if (retry) {

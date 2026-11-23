@@ -51,7 +51,7 @@
             <span>Email</span>
             <input id="signin-email" type="email" required autocomplete="email" />
           </label>
-          <label class="field">
+          <label class="field" id="signin-password-row">
             <span>Password</span>
             <input id="signin-password" type="password" required autocomplete="current-password" minlength="6" />
           </label>
@@ -61,10 +61,24 @@
             <button id="signin-google" class="btn btn-ghost btn-google" type="button"><img src="icons/google.svg" alt="" aria-hidden="true" /> Continue with Google</button>
           </div>
         </form>
-        <p class="switch-line">
+        <p class="switch-line" id="signin-switch-row">
           <span id="signin-toggle-message">Don't have an account?</span>
           <button id="signin-toggle" class="linklike" type="button">Sign Up</button>
         </p>
+        <p class="switch-line" id="signin-forgot-row">
+          <button id="signin-forgot" class="linklike" type="button">Forgot password?</button>
+        </p>
+        <p class="switch-line" id="signin-back-row" hidden>
+          <button id="signin-back" class="linklike" type="button">← Back to sign in</button>
+        </p>
+      </div>
+
+      <div id="signin-reset-sent" hidden>
+        <h1><span class="ok">Check your inbox</span></h1>
+        <p id="signin-reset-text">If an account exists for that email, a reset link is on its way.</p>
+        <div class="actions">
+          <button id="signin-reset-back" class="btn btn-ghost" type="button">Back to sign in</button>
+        </div>
       </div>
 
       <div id="signin-done" hidden>

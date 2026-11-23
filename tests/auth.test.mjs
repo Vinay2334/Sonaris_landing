@@ -186,6 +186,76 @@ test("buildCheckoutUrl accepts catalog rows (snake_case product id)", () => {
   assert.equal(auth.buildCheckoutUrl({ id: "pro" }, { userId: "u-1" }), null);
 });
 
+test("requestPasswordReset posts to /recover with redirect_to", async () => {
+  const seen = [];
+  const { auth } = loadAuth({
+    fetchImpl: async (url, opts) => {
+      seen.push({ url: String(url), body: JSON.parse(opts.body) });
+      return { ok: true, status: 200, json: async () => ({}) };
+    },
+  });
+  assert.equal(
+    await auth.requestPasswordReset(" me@example.com ", "http://localhost:8080/reset-password.html"),
+    true,
+  );
+  assert.ok(seen[0].url.includes("/auth/v1/recover"));
+  assert.ok(seen[0].url.includes("redirect_to=" + encodeURIComponent("http://localhost:8080/reset-password.html")));
+  assert.deepEqual(norm(seen[0].body), { email: "me@example.com" });
+
+  await assert.rejects(auth.requestPasswordReset("   ", "http://x/reset"), /email/i);
+  const { auth: auth2 } = loadAuth({
+    fetchImpl: async () => ({ ok: false, status: 400, json: async () => ({ msg: "bad email" }) }),
+  });
+  await assert.rejects(auth2.requestPasswordReset("bad", ""), /bad email/);
+});
+
+test("exchangeRecoveryToken verifies the token_hash into a session", async () => {
+  const seen = [];
+  const { auth } = loadAuth({
+    fetchImpl: async (url, opts) => {
+      seen.push({ url: String(url), body: JSON.parse(opts.body) });
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({ access_token: "rec", refresh_token: "rr", expires_in: 3600 }),
+      };
+    },
+  });
+  const session = await auth.exchangeRecoveryToken("hash-123");
+  assert.equal(session.access_token, "rec");
+  assert.deepEqual(norm(seen[0].body), { type: "recovery", token_hash: "hash-123" });
+
+  const { auth: auth2 } = loadAuth({
+    fetchImpl: async () => ({ ok: false, status: 401, json: async () => ({}) }),
+  });
+  assert.equal(await auth2.exchangeRecoveryToken("stale"), null);
+  assert.equal(await auth2.exchangeRecoveryToken(""), null);
+  assert.equal(await auth2.exchangeRecoveryToken(null), null);
+});
+
+test("updatePassword PUTs the new password with the recovery token", async () => {
+  const seen = [];
+  const { auth } = loadAuth({
+    fetchImpl: async (url, opts) => {
+      seen.push({ url: String(url), method: opts.method, auth: opts.headers.Authorization, body: JSON.parse(opts.body) });
+      return { ok: true, status: 200, json: async () => ({ id: "u-1" }) };
+    },
+  });
+  const user = await auth.updatePassword("rec-token", "newpass1");
+  assert.equal(user.id, "u-1");
+  assert.ok(seen[0].url.includes("/auth/v1/user"));
+  assert.equal(seen[0].method, "PUT");
+  assert.equal(seen[0].auth, "Bearer " + "rec-token");
+  assert.deepEqual(norm(seen[0].body), { password: "newpass1" });
+
+  await assert.rejects(auth.updatePassword("", "newpass1"), /token/i);
+  await assert.rejects(auth.updatePassword("rec-token", "short"), /6 characters/);
+  const { auth: auth2 } = loadAuth({
+    fetchImpl: async () => ({ ok: false, status: 422, json: async () => ({ message: "weak password" }) }),
+  });
+  await assert.rejects(auth2.updatePassword("expired", "longenough"), /weak password/);
+});
+
 test("stale session refreshes; rejected refresh clears the token", async () => {
   const good = {
     sonarisSiteSession: JSON.stringify({
