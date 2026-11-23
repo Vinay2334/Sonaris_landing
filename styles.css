@@ -98,8 +98,11 @@ a:hover { color: #92400e; }
 }
 .site-head nav a:hover { color: var(--text); }
 /* Navbar store button (TransParrot-style: text links + one filled CTA).
-   Reads as a button but stays an <a> so it works with no JS. */
-.site-head nav a.nav-cta {
+   Reads as a button but stays an <a> so it works with no JS. The CTA
+   lives outside <nav> so it stays pinned at the top on phones while the
+   text links collapse into the hamburger menu. */
+.site-head nav a.nav-cta,
+.site-head a.nav-cta {
   background: var(--accent);
   color: var(--accent-ink);
   font-weight: 650;
@@ -108,13 +111,55 @@ a:hover { color: #92400e; }
   box-shadow: 0 1px 2px rgba(28, 25, 23, 0.08), 0 6px 16px -10px rgba(217, 119, 6, 0.7);
   white-space: nowrap;
 }
-.site-head nav a.nav-cta:hover {
+.site-head nav a.nav-cta:hover,
+.site-head a.nav-cta:hover {
   background: var(--accent-hover);
   color: var(--accent-ink);
 }
-@media (max-width: 640px) {
-  .site-head .wrap { flex-wrap: wrap; }
-  .site-head nav { flex-wrap: wrap; gap: 10px 14px; }
+/* Hamburger toggle: desktop never shows it. */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  color: var(--text);
+  cursor: pointer;
+}
+.nav-toggle:hover {
+  border-color: var(--accent-hover);
+  background: var(--bg-soft);
+}
+.nav-toggle svg { display: block; }
+@media (max-width: 767px) {
+  /* Top row stays one line: brand | Install extension | hamburger.
+     The text links drop into a full-width stacked panel when open. */
+  .site-head .wrap { flex-wrap: wrap; gap: 10px 12px; }
+  .site-head .brand { font-size: 16px; margin-right: auto; }
+  .site-head a.nav-cta {
+    margin-left: auto;
+    font-size: 14px;
+    padding: 7px 12px;
+  }
+  .nav-toggle { display: inline-flex; }
+  .site-head nav {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+    border-top: 1px solid var(--line);
+  }
+  .site-head nav.is-open { display: flex; }
+  .site-head nav a {
+    padding: 10px 2px;
+    border-bottom: 1px solid var(--line);
+  }
 }
 
 /* ---- hero ---- */

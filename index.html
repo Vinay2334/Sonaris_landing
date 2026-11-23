@@ -82,6 +82,10 @@
       outline-offset: 2px;
       border-radius: 4px;
     }
+    /* Mobile menu: stacked links, shown only when the hamburger opens it. */
+    @media (max-width: 767px) {
+      #mobile-menu.is-open { display: flex; }
+    }
   </style>
 </head>
 <body class="bg-paper text-stone-600 font-sans antialiased">
@@ -90,14 +94,26 @@
       <a href="index.html" class="text-lg font-bold no-underline text-cocoa">
         <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-honey text-cocoa font-extrabold mr-2">S</span>Sonaris
       </a>
-      <nav class="ml-auto flex items-center gap-5 text-[15px]">
-        <a href="#where" class="text-stone-600 hover:text-cocoa no-underline">Where it works</a>
-        <a href="#how" class="text-stone-600 hover:text-cocoa no-underline">How it works</a>
-        <a href="pricing.html" class="text-stone-600 hover:text-cocoa no-underline">Pricing</a>
-        <a href="account.html" class="text-stone-600 hover:text-cocoa no-underline">My account</a>
-        <a data-webstore href="https://chromewebstore.google.com/" target="_blank" rel="noopener" class="bg-honey text-cocoa font-semibold rounded-full px-4 py-2 no-underline shadow-cta hover:bg-amber-500">Install extension</a>
-      </nav>
+      <div class="ml-auto flex items-center gap-2 sm:gap-3">
+        <nav class="hidden md:flex items-center gap-5 text-[15px]" aria-label="Primary">
+          <a href="#where" class="text-stone-600 hover:text-cocoa no-underline">Where it works</a>
+          <a href="#how" class="text-stone-600 hover:text-cocoa no-underline">How it works</a>
+          <a href="pricing.html" class="text-stone-600 hover:text-cocoa no-underline">Pricing</a>
+          <a href="account.html" class="text-stone-600 hover:text-cocoa no-underline">My account</a>
+        </nav>
+        <a data-webstore href="https://chromewebstore.google.com/" target="_blank" rel="noopener" class="bg-honey text-cocoa font-semibold rounded-full px-3 py-2 sm:px-4 no-underline shadow-cta hover:bg-amber-500 text-sm sm:text-[15px] whitespace-nowrap">Install extension</a>
+        <button type="button" data-nav-toggle aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-stone-300 text-cocoa hover:border-honeydeep hover:bg-cream">
+          <svg data-nav-icon-open width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          <svg data-nav-icon-close width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" hidden><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
     </div>
+    <nav id="mobile-menu" aria-label="Mobile" class="hidden md:hidden border-t border-honeyline bg-paper px-5 py-3 flex-col gap-1">
+      <a href="#where" class="block py-2.5 text-stone-600 hover:text-cocoa no-underline">Where it works</a>
+      <a href="#how" class="block py-2.5 text-stone-600 hover:text-cocoa no-underline">How it works</a>
+      <a href="pricing.html" class="block py-2.5 text-stone-600 hover:text-cocoa no-underline">Pricing</a>
+      <a href="account.html" class="block py-2.5 text-stone-600 hover:text-cocoa no-underline">My account</a>
+    </nav>
   </header>
 
   <main>
@@ -274,6 +290,7 @@
 
   <script src="site-config.js"></script>
   <script src="auth.js"></script>
+  <script src="nav.js"></script>
   <script>
     // Pricing teaser: re-render from the live plan catalog (DB-driven).
     // The hardcoded lines above stay as the instant fallback when the
