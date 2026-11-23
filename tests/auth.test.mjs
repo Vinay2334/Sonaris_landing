@@ -209,6 +209,48 @@ test("requestPasswordReset posts to /recover with redirect_to", async () => {
   await assert.rejects(auth2.requestPasswordReset("bad", ""), /bad email/);
 });
 
+test("signUp points the confirm link at verify.html", async () => {
+  const seen = [];
+  const { auth } = loadAuth({
+    fetchImpl: async (url, opts) => {
+      seen.push({ url: String(url), body: JSON.parse(opts.body) });
+      return { ok: true, status: 200, json: async () => ({ user: { id: "u-1" } }) };
+    },
+  });
+  await auth.signUp("me@example.com", "secret1", "Ada", "L", "http://localhost:8080/verify.html");
+  assert.ok(seen[0].url.includes("/auth/v1/signup"));
+  assert.ok(seen[0].url.includes("redirect_to=" + encodeURIComponent("http://localhost:8080/verify.html")));
+  assert.deepEqual(norm(seen[0].body).data, { first_name: "Ada", last_name: "L" });
+});
+
+test("requestPasswordReset retries bare when redirect_to is rejected", async () => {
+  const urls = [];
+  const { auth } = loadAuth({
+    fetchImpl: async (url) => {
+      urls.push(String(url));
+      if (urls.length === 1) {
+        return { ok: false, status: 400, json: async () => ({ msg: "redirect_to is not allowed" }) };
+      }
+      return { ok: true, status: 200, json: async () => ({}) };
+    },
+  });
+  assert.equal(await auth.requestPasswordReset("me@example.com", "http://localhost:8080/reset-password.html"), true);
+  assert.equal(urls.length, 2);
+  assert.ok(urls[0].includes("redirect_to="));
+  assert.ok(!urls[1].includes("redirect_to="));
+
+  // A non-redirect failure still throws without retrying.
+  const badUrls = [];
+  const { auth: auth2 } = loadAuth({
+    fetchImpl: async (url) => {
+      badUrls.push(String(url));
+      return { ok: false, status: 429, json: async () => ({ msg: "rate limited" }) };
+    },
+  });
+  await assert.rejects(auth2.requestPasswordReset("me@example.com", "http://localhost:8080/reset-password.html"), /rate limited/);
+  assert.equal(badUrls.length, 1);
+});
+
 test("exchangeRecoveryToken verifies the token_hash into a session", async () => {
   const seen = [];
   const { auth } = loadAuth({

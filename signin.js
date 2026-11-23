@@ -165,15 +165,15 @@
 
   var mode = "signin";
 
-  // Absolute reset-password.html URL for the inbox link. Must be
-  // allow-listed in Supabase (Authentication → URL Configuration →
+  // Absolute URL of a site page for inbox links (reset, verify). Must
+  // be allow-listed in Supabase (Authentication → URL Configuration →
   // Redirect URLs) or Supabase ignores it and uses the Site URL.
-  function resetRedirectUrl() {
+  function sitePage(name) {
     try {
       return (
         window.location.origin +
         window.location.pathname.replace(/[^/]*$/, "") +
-        "reset-password.html"
+        name
       );
     } catch (e) {
       return "";
@@ -257,7 +257,7 @@
         googleBtn.disabled = true;
         $("signin-error").hidden = true;
         var req = A.requestPasswordReset
-          ? A.requestPasswordReset(email, resetRedirectUrl())
+          ? A.requestPasswordReset(email, sitePage("reset-password.html"))
           : Promise.reject(new Error("Password reset isn't available right now."));
         req.then(function () {
           $("signin-reset-text").textContent =
@@ -286,7 +286,7 @@
 
       var attempt =
         mode === "signup"
-          ? A.signUp(email, password, firstNameInput.value.trim(), lastNameInput.value.trim())
+          ? A.signUp(email, password, firstNameInput.value.trim(), lastNameInput.value.trim(), sitePage("verify.html"))
           : A.signInWithPassword(email, password);
 
       attempt.then(function (res) {

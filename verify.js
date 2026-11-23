@@ -60,6 +60,21 @@
   var query = parse(location.search);
   var hash = parse(location.hash);
 
+  // Recovery links belong on reset-password.html. When its `redirect_to`
+  // isn't allow-listed yet, Supabase falls back to this page (the Site
+  // URL) — forward everything recovery-typed (tokens and errors alike)
+  // so the reset page renders the right state instead of stranding the
+  // user on an "Email verified" page that changes no password.
+  if (query.type === "recovery" || hash.type === "recovery") {
+    var target = "reset-password.html" + location.search + location.hash;
+    try {
+      location.replace(target);
+    } catch (e) {
+      location.href = target;
+    }
+    return;
+  }
+
   // Explicit failure from Supabase (expired / already-used link).
   if (query.error || hash.error) {
     var desc =

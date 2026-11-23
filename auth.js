@@ -211,8 +211,13 @@
     });
   }
 
-  function signUp(email, password, firstName, lastName) {
-    return fetch(projectUrl() + "/auth/v1/signup", {
+  // `emailRedirectTo` is the absolute verify.html URL the inbox link
+  // should land on (also the Supabase Site URL fallback, and allow-listed
+  // under Redirect URLs). Passed as `redirect_to` like the SDK does.
+  function signUp(email, password, firstName, lastName, emailRedirectTo) {
+    var url = projectUrl() + "/auth/v1/signup";
+    if (emailRedirectTo) url += "?redirect_to=" + encodeURIComponent(emailRedirectTo);
+    return fetch(url, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify({
@@ -246,20 +251,31 @@
   function requestPasswordReset(email, redirectTo) {
     var clean = String(email || "").trim();
     if (!clean) return Promise.reject(new Error("Enter your email first."));
-    var url = projectUrl() + "/auth/v1/recover";
-    if (redirectTo) url += "?redirect_to=" + encodeURIComponent(redirectTo);
-    return fetch(url, {
-      method: "POST",
-      headers: authHeaders(),
-      body: JSON.stringify({ email: clean }),
-    }).then(function (res) {
-      if (!res.ok) {
+    function post(url) {
+      return fetch(url, {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ email: clean }),
+      });
+    }
+    function send() {
+      var url = projectUrl() + "/auth/v1/recover";
+      if (redirectTo) url += "?redirect_to=" + encodeURIComponent(redirectTo);
+      return post(url).then(function (res) {
+        if (res.ok) return true;
         return failMessage(res).then(function (msg) {
+          if (redirectTo && /redirect/i.test(msg)) {
+            // Allow-list missing (or similar): retry bare so the link
+            // still goes out via the Site URL forwarder (verify.html
+            // sends recovery links on to reset-password.html).
+            redirectTo = "";
+            return send();
+          }
           throw new Error(msg);
         });
-      }
-      return true;
-    });
+      });
+    }
+    return send();
   }
 
   // Exchange a recovery token from the email link for a session whose
