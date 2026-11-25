@@ -73,17 +73,13 @@ a:hover { color: #92400e; }
   text-decoration: none;
 }
 .brand-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
   width: 30px;
   height: 30px;
   border-radius: 9px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-weight: 800;
+  object-fit: cover;
   margin-right: 8px;
-  box-shadow: inset 0 -2px 0 rgba(28, 25, 23, 0.12);
+  vertical-align: middle;
 }
 .site-head nav {
   margin-left: auto;

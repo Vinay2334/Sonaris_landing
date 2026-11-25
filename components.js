@@ -11,7 +11,7 @@
   function headerDefault(active) {
     return (
       '<header class="site-head"><div class="wrap">' +
-      '<a class="brand" href="index.html"><span class="brand-mark">S</span>Sonaris</a>' +
+      '<a class="brand" href="index.html"><img class="brand-mark" src="icons/logo.png" alt="" aria-hidden="true" />Sonaris</a>' +
       '<nav id="site-nav" aria-label="Primary">' +
       link("index.html", "Home", active, "home") +
       link("pricing.html", "Pricing", active, "pricing") +
@@ -28,8 +28,8 @@
     return (
       '<header class="border-b border-honeyline bg-paper/90">' +
       '<div class="max-w-6xl mx-auto px-5 py-4 flex items-center gap-3">' +
-      '<a href="index.html" class="text-lg font-bold no-underline text-cocoa">' +
-      '<span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-honey text-cocoa font-extrabold mr-2">S</span>Sonaris</a>' +
+      '<a href="index.html" class="text-lg font-bold no-underline text-cocoa inline-flex items-center">' +
+      '<img class="w-8 h-8 rounded-lg mr-2 object-cover shrink-0" src="icons/logo.png" alt="" aria-hidden="true" />Sonaris</a>' +
       '<div class="ml-auto flex items-center gap-2 sm:gap-3">' +
       '<nav class="hidden md:flex items-center gap-5 text-[15px]" aria-label="Primary">' +
       '<a href="#where" class="text-stone-600 hover:text-cocoa no-underline">Where it works</a>' +
