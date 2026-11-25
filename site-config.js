@@ -50,6 +50,11 @@ window.SonarisSite = {
   // listing is live — then replace with the full item URL.
   CHROME_WEBSTORE_URL: "https://chromewebstore.google.com/",
 
+  // Support inbox shown as plain text in every site footer and in
+  // the extension menu + sign-in page. Single source of truth for the
+  // site; components.js reads it with a hardcoded fallback.
+  SUPPORT_EMAIL: "support@sonaris.cc",
+
   // Plan content (names, prices, features, order, highlight) is NOT
   // configured here: it comes from the `public.plans` table via
   // GET /api/v1/plans, so the dashboard edits it with no redeploy.

@@ -50,6 +50,19 @@
     );
   }
 
+  function supportEmail() {
+    return (window.SonarisSite && window.SonarisSite.SUPPORT_EMAIL) || "support@sonaris.cc";
+  }
+
+  function supportText() {
+    return " · " + supportEmail();
+  }
+
+  // NOTE: pages using footerDefault (pricing, account, ...) load
+  // styles.css, not the Tailwind CDN — so Tailwind classes here have no
+  // effect. Link styling lives in styles.css (.site-foot a), which
+  // mirrors the landing footer's text-stone-500 / no-underline /
+  // hover:text-cocoa look. Keep these anchors class-free.
   var FOOTERS = {
     "billing-full": "Sonaris · Monthly plans in USD, taxes may apply at checkout · Payments securely processed by Dodo Payments · <a href=\"account.html\">My account</a>",
     billing: "Sonaris · Payments securely processed by Dodo Payments · <a href=\"account.html\">My account</a>",
@@ -58,11 +71,12 @@
   };
 
   function footerDefault(variant) {
-    var inner = FOOTERS[variant] || FOOTERS.billing;
+    var inner = (FOOTERS[variant] || FOOTERS.billing) + supportText();
     return '<footer class="site-foot"><div class="wrap">' + inner + "</div></footer>";
   }
 
   function footerLanding() {
+    var email = supportEmail();
     return (
       '<footer class="border-t border-honeyline">' +
       '<div class="max-w-6xl mx-auto px-5 py-6 text-sm text-stone-500 flex flex-wrap gap-x-6 gap-y-2">' +
@@ -71,6 +85,7 @@
       '<a href="pricing.html" class="text-stone-500 no-underline hover:text-cocoa">Pricing</a>' +
       '<a href="account.html" class="text-stone-500 no-underline hover:text-cocoa">My account</a>' +
       '<a data-webstore href="' + STORE_FALLBACK + '" target="_blank" rel="noopener" class="text-stone-500 no-underline hover:text-cocoa">Install extension</a>' +
+      '<span>' + email + '</span>' +
       "</span></div></footer>"
     );
   }

@@ -450,6 +450,15 @@ a:hover { color: #92400e; }
   color: var(--muted);
   font-size: 13.5px;
 }
+/* Footer links mirror the landing footer's Tailwind styling
+   (text-stone-500, no underline, hover:text-cocoa): --muted is
+   #78716c (stone-500) and --text is #1c1917 (cocoa). Needed because
+   these pages load styles.css, not the Tailwind CDN. */
+.site-foot a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.site-foot a:hover { color: var(--text); }
 
 /* ---- status cards (verify / success pages) ---- */
 .status-card {
