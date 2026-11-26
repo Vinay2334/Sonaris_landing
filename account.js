@@ -140,8 +140,71 @@
       if (quota.email) $("account-email").textContent = quota.email;
       paintPlan(quota, catalog);
       paintQuota(quota);
+      wireManageSubscription(quota, catalog);
       $("quota-body").hidden = false;
       $("quota-error").hidden = true;
+    });
+  }
+
+  // "Manage subscription": one-click Dodo portal for paid plans only.
+  // Free users have nothing to cancel, so the button stays hidden. Paid
+  // is decided from the live catalog (price > 0); without a catalog the
+  // plan name alone degrades to "anything but Free".
+  function isPaidPlan(quota, catalog) {
+    var match = quota.plan ? findPlan(catalog, quota.plan) : null;
+    if (match) return Number(match.price_monthly_usd || 0) > 0;
+    var name = String(quota.plan || "").trim().toLowerCase();
+    return !!name && name !== "free";
+  }
+
+  function supportEmail() {
+    try {
+      var site = window.SonarisSite || {};
+      if (site.SUPPORT_EMAIL) return site.SUPPORT_EMAIL;
+    } catch (e) {
+      /* fallback below */
+    }
+    return "support@sonaris.cc";
+  }
+
+  function portalReturnUrl() {
+    try {
+      var path = window.location.pathname.replace(/[^/]*$/, "");
+      return window.location.origin + path + "account.html";
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function wireManageSubscription(quota, catalog) {
+    var btn = $("plan-portal");
+    var msg = $("plan-portal-msg");
+    if (!btn || btn.dataset.wired) {
+      if (btn) btn.hidden = !isPaidPlan(quota, catalog);
+      return;
+    }
+    btn.dataset.wired = "1";
+    btn.hidden = !isPaidPlan(quota, catalog);
+    btn.addEventListener("click", function () {
+      if (!A.createPortalSession) return;
+      btn.disabled = true;
+      msg.classList.remove("form-error");
+      msg.textContent = "Opening the subscription portal…";
+      msg.hidden = false;
+      A.createPortalSession(portalReturnUrl()).then(function (data) {
+        if (data && data.url) {
+          window.location.href = data.url;
+          return;
+        }
+        var reason = data && data.reason;
+        if (reason === "no_subscription") {
+          msg.textContent = "No active subscription found on this account — write to " + supportEmail() + " and we'll sort it out.";
+        } else {
+          msg.textContent = "Couldn't open the subscription portal. Write to " + supportEmail() + " and we'll help you cancel.";
+        }
+        msg.classList.add("form-error");
+        btn.disabled = false;
+      });
     });
   }
 

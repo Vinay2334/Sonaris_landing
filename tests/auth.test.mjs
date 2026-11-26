@@ -298,6 +298,77 @@ test("updatePassword PUTs the new password with the recovery token", async () =>
   await assert.rejects(auth2.updatePassword("expired", "longenough"), /weak password/);
 });
 
+test("portalUrl points at the subscription endpoint", () => {
+  const { auth } = loadAuth();
+  assert.equal(auth.portalUrl(), "/api/v1/me/subscription/portal");
+});
+
+test("createPortalSession posts the token and resolves the body", async () => {
+  const stored = {
+    sonarisSiteSession: JSON.stringify({
+      access_token: "live",
+      refresh_token: "r",
+      expires_at: Date.now() + 3600 * 1000,
+      user: { id: "u-1" },
+    }),
+  };
+  const seen = [];
+  const { auth } = loadAuth({
+    stored,
+    fetchImpl: async (url, opts) => {
+      seen.push({
+        url: String(url),
+        method: opts.method,
+        auth: opts.headers.Authorization,
+        body: JSON.parse(opts.body),
+      });
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({ ok: true, url: "https://customer.dodopayments.com/session/abc" }),
+      };
+    },
+  });
+  const data = await auth.createPortalSession("http://localhost:8080/account.html");
+  assert.equal(seen[0].url, "/api/v1/me/subscription/portal");
+  assert.equal(seen[0].method, "POST");
+  assert.equal(seen[0].auth, "Bearer live");
+  assert.deepEqual(norm(seen[0].body), { return_url: "http://localhost:8080/account.html" });
+  assert.equal(data.url, "https://customer.dodopayments.com/session/abc");
+});
+
+test("createPortalSession surfaces backend refusals, null when offline", async () => {
+  const stored = {
+    sonarisSiteSession: JSON.stringify({
+      access_token: "live",
+      refresh_token: "r",
+      expires_at: Date.now() + 3600 * 1000,
+      user: { id: "u-1" },
+    }),
+  };
+  const refused = loadAuth({
+    stored,
+    fetchImpl: async () => ({
+      ok: false,
+      status: 404,
+      json: async () => ({ ok: false, reason: "no_subscription" }),
+    }),
+  });
+  assert.deepEqual(norm(await refused.auth.createPortalSession("")), {
+    ok: false,
+    reason: "no_subscription",
+  });
+
+  const signedOut = loadAuth();
+  assert.equal(await signedOut.auth.createPortalSession(""), null);
+
+  const offline = loadAuth({
+    stored,
+    fetchImpl: async () => { throw new Error("down"); },
+  });
+  assert.equal(await offline.auth.createPortalSession(""), null);
+});
+
 test("stale session refreshes; rejected refresh clears the token", async () => {
   const good = {
     sonarisSiteSession: JSON.stringify({

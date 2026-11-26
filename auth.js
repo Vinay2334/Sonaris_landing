@@ -411,6 +411,40 @@
     return backendUrl() + "/api/v1/me/quota";
   }
 
+  function portalUrl() {
+    return backendUrl() + "/api/v1/me/subscription/portal";
+  }
+
+  // One-click Dodo portal link for the signed-in user. Resolves the
+  // backend body ({ ok, url } on success, { ok:false, reason } on a
+  // backend refusal) or null when signed out, unreachable, or rejected.
+  // The caller redirects to `url` on success and renders the support
+  // fallback otherwise.
+  function createPortalSession(returnUrl) {
+    return getAccessToken().then(function (token) {
+      if (!token) return null;
+      var body = {};
+      if (returnUrl) body.return_url = returnUrl;
+      return fetch(portalUrl(), {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }).then(function (res) {
+        return res.json().then(function (data) {
+          if (!res.ok) return data || { ok: false };
+          return data;
+        }).catch(function () {
+          return res.ok ? null : { ok: false };
+        });
+      }).catch(function () {
+        return null;
+      });
+    });
+  }
+
   // Public store URL for the extension (single source of truth for the
   // navbar / account "Install extension" buttons; the store homepage
   // until the listing is live — see site-config.js).
@@ -570,6 +604,8 @@
   A.buildSigninUrl = buildSigninUrl;
   A.plansUrl = plansUrl;
   A.quotaUrl = quotaUrl;
+  A.portalUrl = portalUrl;
+  A.createPortalSession = createPortalSession;
   A.fetchPlans = fetchPlans;
   A.planStates = planStates;
   A.googleAuthorizeUrl = googleAuthorizeUrl;

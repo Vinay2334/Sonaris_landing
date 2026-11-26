@@ -130,9 +130,8 @@
       return cta;
     }
     if (st.isCheaper) {
-      var down = el("button", "btn btn-ghost", "Downgrade unavailable");
-      down.type = "button";
-      down.disabled = true;
+      var down = el("a", "btn btn-ghost", "Manage subscription");
+      down.href = "account.html";
       down.title =
         "To move to a lower plan, cancel your subscription — it stays active until the end of the billing period.";
       cta.appendChild(down);
