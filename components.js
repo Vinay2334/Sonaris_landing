@@ -16,6 +16,7 @@
       link("index.html", "Home", active, "home") +
       link("pricing.html", "Pricing", active, "pricing") +
       link("account.html", "My account", active, "account") +
+      '<a data-webstore class="nav-cta" href="' + STORE_FALLBACK + '" target="_blank" rel="noopener">Install extension</a>' +
       "</nav>" +
       '<a data-webstore class="nav-cta" href="' + STORE_FALLBACK + '" target="_blank" rel="noopener">Install extension</a>' +
       '<button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">' +
@@ -37,7 +38,7 @@
       '<a href="pricing.html" class="text-stone-600 hover:text-cocoa no-underline">Pricing</a>' +
       '<a href="account.html" class="text-stone-600 hover:text-cocoa no-underline">My account</a>' +
       "</nav>" +
-      '<a data-webstore href="' + STORE_FALLBACK + '" target="_blank" rel="noopener" class="bg-honey text-cocoa font-semibold rounded-full px-3 py-2 sm:px-4 no-underline shadow-cta hover:bg-amber-500 text-sm sm:text-[15px] whitespace-nowrap">Install extension</a>' +
+      '<a data-webstore href="' + STORE_FALLBACK + '" target="_blank" rel="noopener" class="hidden md:inline-flex bg-honey text-cocoa font-semibold rounded-full px-3 py-2 sm:px-4 no-underline shadow-cta hover:bg-amber-500 text-sm sm:text-[15px] whitespace-nowrap">Install extension</a>' +
       '<button type="button" data-nav-toggle aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-stone-300 text-cocoa hover:border-honeydeep hover:bg-cream">' +
       ICON_OPEN + ICON_CLOSE +
       "</button></div></div>" +
@@ -46,6 +47,7 @@
       '<a href="#how" class="block py-2.5 text-stone-600 hover:text-cocoa no-underline">How it works</a>' +
       '<a href="pricing.html" class="block py-2.5 text-stone-600 hover:text-cocoa no-underline">Pricing</a>' +
       '<a href="account.html" class="block py-2.5 text-stone-600 hover:text-cocoa no-underline">My account</a>' +
+      '<a data-webstore href="' + STORE_FALLBACK + '" target="_blank" rel="noopener" class="block py-2.5 text-cocoa font-semibold no-underline">Install extension</a>' +
       "</nav></header>"
     );
   }
@@ -54,25 +56,38 @@
     return (window.SonarisSite && window.SonarisSite.SUPPORT_EMAIL) || "support@sonaris.cc";
   }
 
-  function supportText() {
-    return " · " + supportEmail();
-  }
-
   // NOTE: pages using footerDefault (pricing, account, ...) load
   // styles.css, not the Tailwind CDN — so Tailwind classes here have no
-  // effect. Link styling lives in styles.css (.site-foot a), which
-  // mirrors the landing footer's text-stone-500 / no-underline /
-  // hover:text-cocoa look. Keep these anchors class-free.
+  // effect. Markup mirrors the landing footer (tagline left, link
+  // group right); the look lives in styles.css (.site-foot), which
+  // replicates the landing's honeyline border, stone-500 text, and
+  // hover:text-cocoa links. Keep these anchors class-free.
+  var POLICY_LINKS = '<a href="terms.html">Terms</a>' +
+    '<a href="privacy.html">Privacy</a>' +
+    '<a href="refunds.html">Refunds</a>';
   var FOOTERS = {
-    "billing-full": "Sonaris · Monthly plans in USD, taxes may apply at checkout · Payments securely processed by Dodo Payments · <a href=\"account.html\">My account</a>",
-    billing: "Sonaris · Payments securely processed by Dodo Payments · <a href=\"account.html\">My account</a>",
-    verify: "Sonaris · Email verification",
-    password: "Sonaris · Password reset · <a href=\"account.html\">My account</a>"
+    "billing-full": {
+      tag: "Sonaris · Monthly plans in USD, taxes may apply at checkout · Payments securely processed by Dodo Payments",
+      links: '<a href="account.html">My account</a>' + POLICY_LINKS
+    },
+    billing: {
+      tag: "Sonaris · Payments securely processed by Dodo Payments",
+      links: '<a href="account.html">My account</a>' + POLICY_LINKS
+    },
+    verify: { tag: "Sonaris · Email verification", links: "" },
+    password: {
+      tag: "Sonaris · Password reset",
+      links: '<a href="account.html">My account</a>'
+    }
   };
 
   function footerDefault(variant) {
-    var inner = (FOOTERS[variant] || FOOTERS.billing) + supportText();
-    return '<footer class="site-foot"><div class="wrap">' + inner + "</div></footer>";
+    var f = FOOTERS[variant] || FOOTERS.billing;
+    return '<footer class="site-foot"><div class="wrap">' +
+      '<span class="foot-tag">' + f.tag + "</span>" +
+      '<span class="foot-links">' + f.links +
+      "<span>" + supportEmail() + "</span></span>" +
+      "</div></footer>";
   }
 
   function footerLanding() {
@@ -84,6 +99,9 @@
       '<span class="ml-auto flex flex-wrap gap-x-6 gap-y-2">' +
       '<a href="pricing.html" class="text-stone-500 no-underline hover:text-cocoa">Pricing</a>' +
       '<a href="account.html" class="text-stone-500 no-underline hover:text-cocoa">My account</a>' +
+      '<a href="terms.html" class="text-stone-500 no-underline hover:text-cocoa">Terms</a>' +
+      '<a href="privacy.html" class="text-stone-500 no-underline hover:text-cocoa">Privacy</a>' +
+      '<a href="refunds.html" class="text-stone-500 no-underline hover:text-cocoa">Refunds</a>' +
       '<a data-webstore href="' + STORE_FALLBACK + '" target="_blank" rel="noopener" class="text-stone-500 no-underline hover:text-cocoa">Install extension</a>' +
       '<span>' + email + '</span>' +
       "</span></div></footer>"

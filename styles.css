@@ -21,7 +21,7 @@
   --good-ink: #14532d;
   --bad: #b91c1c;
   --radius: 14px;
-  --max: 1060px;
+  --max: 1200px; /* match the landing page's max-w-6xl */
   --shadow-card: 0 1px 2px rgba(28, 25, 23, 0.05), 0 10px 28px -18px rgba(180, 130, 20, 0.35);
 }
 
@@ -94,9 +94,10 @@ a:hover { color: #92400e; }
 }
 .site-head nav a:hover { color: var(--text); }
 /* Navbar store button (TransParrot-style: text links + one filled CTA).
-   Reads as a button but stays an <a> so it works with no JS. The CTA
-   lives outside <nav> so it stays pinned at the top on phones while the
-   text links collapse into the hamburger menu. */
+   Reads as a button but stays an <a> so it works with no JS. Desktop
+   shows the pinned top-row button; on phones that button hides and the
+   duplicate inside <nav> shows instead, so Install extension lives
+   only in the hamburger menu. */
 .site-head nav a.nav-cta,
 .site-head a.nav-cta {
   background: var(--accent);
@@ -113,6 +114,8 @@ a:hover { color: #92400e; }
   background: var(--accent-hover);
   color: var(--accent-ink);
 }
+/* In-nav duplicate: desktop uses the pinned top-row button. */
+.site-head nav a.nav-cta { display: none; }
 /* Hamburger toggle: desktop never shows it. */
 .nav-toggle {
   display: none;
@@ -151,11 +154,22 @@ a:hover { color: #92400e; }
     gap: 0;
     margin: 0;
     border-top: 1px solid var(--line);
+    /* Below the toggle: brand + hamburger stay on the first row
+       while the open menu drops underneath. */
+    order: 3;
   }
   .site-head nav.is-open { display: flex; }
   .site-head nav a {
     padding: 10px 2px;
     border-bottom: 1px solid var(--line);
+  }
+  /* Phones: the pinned top-row button hides; the in-nav duplicate
+     shows as a centered pill below the text links. */
+  .site-head .wrap > a.nav-cta { display: none; }
+  .site-head nav a.nav-cta {
+    display: block;
+    text-align: center;
+    margin: 12px 0 6px;
   }
 }
 
@@ -189,7 +203,7 @@ a:hover { color: #92400e; }
 /* ---- plans ---- */
 .plans {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 18px;
   padding: 32px 0 8px;
 }
@@ -346,7 +360,8 @@ a:hover { color: #92400e; }
 .account-bar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 4px 12px;
   background: var(--bg-soft);
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -354,6 +369,10 @@ a:hover { color: #92400e; }
   margin-top: 18px;
   font-size: 14.5px;
   color: var(--body);
+}
+.account-bar > span:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .account-bar a {
   margin-left: auto;
@@ -446,14 +465,26 @@ a:hover { color: #92400e; }
 .site-foot {
   border-top: 1px solid var(--line);
   margin-top: 36px;
-  padding: 18px 0 30px;
+  padding: 24px 0;
   color: var(--muted);
-  font-size: 13.5px;
+  font-size: 14px;
 }
-/* Footer links mirror the landing footer's Tailwind styling
-   (text-stone-500, no underline, hover:text-cocoa): --muted is
-   #78716c (stone-500) and --text is #1c1917 (cocoa). Needed because
-   these pages load styles.css, not the Tailwind CDN. */
+/* Same layout as the landing footer (index.html, Tailwind):
+   tagline left, link group right, wrapping on narrow screens.
+   --line is honeyline #f0e2b6, --muted is stone-500 #78716c,
+   --text is cocoa #1c1917. Plain CSS here because these pages
+   load styles.css, not the Tailwind CDN. */
+.site-foot .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+.site-foot .foot-links {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
 .site-foot a {
   color: var(--muted);
   text-decoration: none;

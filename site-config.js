@@ -43,7 +43,7 @@ window.SonarisSite = {
   // FastAPI backend origin (must match where `uvicorn app.main:app`
   // listens). The pricing page fetches the plan catalog and the signed-in
   // user's quota from here; the extension has its own copy of this URL.
-  BACKEND_BASE_URL: "https://api.sonaris.cc",
+  BACKEND_BASE_URL: "http://127.0.0.1:8000/",
 
   // Chrome Web Store listing for the extension (navbar + account page
   // "Install extension" buttons). Points at the store homepage until the
