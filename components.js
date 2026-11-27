@@ -47,7 +47,7 @@
       '<a href="#how" class="block py-2.5 text-stone-600 hover:text-cocoa no-underline">How it works</a>' +
       '<a href="pricing.html" class="block py-2.5 text-stone-600 hover:text-cocoa no-underline">Pricing</a>' +
       '<a href="account.html" class="block py-2.5 text-stone-600 hover:text-cocoa no-underline">My account</a>' +
-      '<a data-webstore href="' + STORE_FALLBACK + '" target="_blank" rel="noopener" class="block py-2.5 text-cocoa font-semibold no-underline">Install extension</a>' +
+      '<a data-webstore href="' + STORE_FALLBACK + '" target="_blank" rel="noopener" class="block text-center bg-honey text-cocoa font-semibold rounded-full px-4 py-2.5 no-underline shadow-cta hover:bg-amber-500 mt-2 mb-1">Install extension</a>' +
       "</nav></header>"
     );
   }
